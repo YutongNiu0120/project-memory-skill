@@ -7,7 +7,7 @@ Two text-first Codex skills for turning a repository into a reusable, cross-sess
 - `project-init`: bootstrap a repo for Codex by creating or refreshing `AGENTS.md` and `.project-memory`
 - `project-memory`: maintain repo-local project memory with clear separation between generated context and curated history
 
-No Python runtime. No helper backend. No hidden state machine. Just Markdown that the model can read and maintain directly.
+No helper backend. No hidden state machine. Just Markdown that the model can read and maintain directly.
 
 If this saves you from re-scanning the same repo every session, give it a star.
 
@@ -51,7 +51,6 @@ Highlights:
 
 ## Key Advantages
 
-- Zero runtime dependency: no Python required for normal use
 - Text-first by design: the agent reads and edits Markdown directly
 - Human-auditable: all memory lives in plain files
 - Safer refresh model: generated context can evolve without overwriting curated notes
