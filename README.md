@@ -1,61 +1,97 @@
-# Codex Project Bootstrap Skills
+# project-memory-skill
 
 [中文介绍](README.zh-CN.md)
 
-Two text-first Codex skills for turning a repository into a reusable, cross-session workspace:
+`project-memory` is a text-first Codex skill for building repository-level memory that survives across sessions.
 
-- `project-init`: bootstrap a repo for Codex by creating or refreshing `AGENTS.md` and `.project-memory`
-- `project-memory`: maintain repo-local project memory with clear separation between generated context and curated history
+It helps the agent understand a project faster, keep stable project knowledge in one place, and avoid wasting tokens on repeated large-scale scans of the same codebase.
 
-No helper backend. No hidden state machine. Just Markdown that the model can read and maintain directly.
+This repository is centered on `project-memory`. `project-init` is included as a lightweight companion only to make first-time setup easier.
 
-If this saves you from re-scanning the same repo every session, give it a star.
+## What `project-memory` Does
 
-## Why This Repo Exists
+`project-memory` maintains a repo-local `.project-memory/` directory with a clear split between:
 
-Many agent skills become heavier than the problem they solve. They ship scripts, local CLIs, or mini backends just to manage a handful of project documents.
+- rebuildable project context
+- durable project history
+- ongoing focus and decisions
 
-This repo takes the opposite approach:
+The goal is simple:
 
-- Keep the workflow text-first
-- Let the model work on files it can inspect directly
-- Make all state transparent to the user
-- Preserve human-written context instead of overwriting it
+- make the agent more project-aware
+- let useful project knowledge accumulate over time
+- reduce repeated exploration cost
+- give future sessions a faster, lower-token starting point
 
-The result is easier to understand, easier to audit, and easier to adapt to your own setup.
+## Why It Is Useful
 
-## What's Inside
+When an agent re-enters a repository, the expensive part is usually not editing code. It is rebuilding context:
 
-### `project-init`
+- what this project does
+- which modules matter
+- where the real entrypoints are
+- which conventions are actually used
+- which decisions and constraints already exist
 
-Use this when you open a repo for the first time and want Codex to make it ready for repeated work.
+`project-memory` turns that repeated rediscovery into maintained project memory.
 
-Highlights:
+Instead of re-scanning large areas every time, the agent can read `.project-memory` first and then go straight to the code paths that matter.
 
-- Creates or refreshes `AGENTS.md` from verified repo facts
-- Initializes `.project-memory` without requiring scripts
-- Keeps the managed `AGENTS.md` memory block aligned
-- Prefers refresh over destructive rewrite
+## Core Features
 
-### `project-memory`
+- Project-level memory stored directly in Markdown
+- Separate generated context from curated historical notes
+- Preserve durable knowledge such as decisions, milestones, and current focus
+- Revisit a repository by reading `.project-memory` before broad code scanning
+- Reduce token waste caused by repeated large-scale exploration
+- Default project documents to Chinese while preserving code identifiers and paths
 
-Use this to maintain repo-local memory that survives across conversations.
+## Memory Structure
 
-Highlights:
+```text
+.project-memory/
+  README.md
+  generated/
+    project-summary.md
+    feature-index.md
+    development-playbook.md
+  memory/
+    milestones.md
+    decisions.md
+    current.md
+```
 
-- Splits rebuildable context from curated historical notes
-- Keeps generated files in `.project-memory/generated/`
-- Keeps durable notes in `.project-memory/memory/`
-- Preserves manual sections during refresh
-- Defaults project-memory documents to Chinese unless the user asks otherwise
+How the layers work:
 
-## Key Advantages
+- `generated/`: rebuildable summaries and navigation docs
+- `memory/`: durable project history that should survive refreshes
+- `README.md`: the read order for future sessions
 
-- Text-first by design: the agent reads and edits Markdown directly
-- Human-auditable: all memory lives in plain files
-- Safer refresh model: generated context can evolve without overwriting curated notes
-- Repo-native workflow: optimized for real coding repositories, not toy demos
-- Chinese-friendly output: ideal for teams that want Chinese repo guidance without translating code identifiers
+## Revisit Workflow
+
+When the agent comes back to the same repository in a later session:
+
+1. Read `AGENTS.md`
+2. Read `.project-memory/README.md`
+3. Read `generated/project-summary.md`
+4. Read `generated/development-playbook.md`
+5. Read `generated/feature-index.md`
+6. Read relevant curated files in `memory/`
+7. Only then decide whether broader code scanning is still needed
+
+This is the key behavior of the skill, and the main source of token savings.
+
+## Included Companion: `project-init`
+
+This repository also includes `project-init`, but it is intentionally a supporting skill.
+
+Use `project-init` only when a repository is new or not yet prepared for Codex. Its job is to:
+
+- create or refresh `AGENTS.md`
+- initialize `.project-memory`
+- align the managed project-memory block inside `AGENTS.md`
+
+After initialization, ongoing usage should mainly rely on `project-memory`.
 
 ## Repository Layout
 
@@ -83,48 +119,29 @@ Highlights:
 Copy the skill folders into your Codex skills directory:
 
 ```text
-~/.codex/skills/project-init
 ~/.codex/skills/project-memory
+~/.codex/skills/project-init
 ```
 
-Or symlink them if you prefer to keep a single working copy.
+## Usage
 
-## Suggested Workflow
+1. Use `project-init` once for a new repository.
+2. Let it create or refresh `AGENTS.md` and `.project-memory/`.
+3. In later sessions, use `project-memory` as the default entry for project context.
+4. Before scanning large parts of the repo, read `.project-memory` history first.
+5. Update generated context or curated notes after substantial work.
 
-1. Use `project-init` when a repo is new or not yet Codex-ready.
-2. Let it create or refresh `AGENTS.md`.
-3. Let it initialize `.project-memory/`.
-4. Use `project-memory` during later tasks to refresh generated context and accumulate durable project knowledge.
+## Main Advantages
 
-## Who This Is For
+- Helps the agent understand the project faster
+- Builds repo-level memory that can keep accumulating
+- Reduces repeated large-scale scanning and token waste
+- Keeps project knowledge transparent and editable
+- Makes later sessions more repo-native and less exploratory
 
-- Engineers using Codex across many repositories
-- Teams who want persistent repo guidance without adding tooling overhead
-- Users who prefer transparent Markdown over opaque automation
-- Chinese-speaking workflows that still need code and paths preserved in original form
+## Read First
 
-## Design Principles
-
-- Verified facts over invented boilerplate
-- Refresh over overwrite
-- Generated context separate from curated memory
-- Markdown first
-- Chinese by default for project docs, unless the user switches language
-
-## Related Files Worth Reading
-
-- `project-init/SKILL.md`
 - `project-memory/SKILL.md`
 - `project-memory/references/file-guides.md`
 - `project-memory/templates/`
-
-## Star-Worthy, In Practice
-
-These skills are small on purpose. That is the advantage.
-
-- You can understand the whole system in minutes
-- You can review every stored rule in plain text
-- You can customize the templates without touching code
-- You do not need to debug a local backend just to keep repo notes current
-
-If you want Codex skills that stay lightweight while becoming more useful over time, this repo is built for that.
+- `project-init/SKILL.md`

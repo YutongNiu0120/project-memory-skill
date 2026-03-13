@@ -12,6 +12,7 @@ Use this skill to keep a repo-local project memory that survives across conversa
 This version is text-first. The agent should read and edit Markdown files directly instead of relying on Python scripts.
 
 Treat `.project-memory/generated/` as rebuildable context and `.project-memory/memory/` as curated history that must survive refreshes.
+When re-entering the same repository in a later session, treat `.project-memory` as the first historical source to read before broad repo scanning.
 
 ## Language
 
@@ -129,11 +130,11 @@ Use direct file editing instead of helper scripts:
 For substantial repo work:
 
 1. Read `AGENTS.md`.
-2. Follow the links into `.project-memory/README.md`.
+2. When revisiting a repository across sessions, read `.project-memory/README.md` and the linked historical files before broad code scanning.
 3. Read `generated/project-summary.md`.
 4. Read `generated/development-playbook.md` before scanning large code areas or `common` packages.
 5. Read `generated/feature-index.md` to navigate into concrete code paths.
-6. Read curated memory only when the task touches ongoing milestones, decisions, or current focus.
+6. Read curated memory when the task touches ongoing milestones, decisions, current focus, or previously learned project constraints.
 7. After the task, decide whether the change affects generated context, curated memory, or both.
 
 ## AGENTS.md Rules

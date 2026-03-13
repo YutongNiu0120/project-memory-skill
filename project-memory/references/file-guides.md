@@ -157,3 +157,4 @@ When refreshing generated files:
 3. Prefer path references that help the next task start faster.
 4. Do not rewrite curated history unless the user explicitly asks.
 5. When updating `development-playbook.md`, rewrite only the auto-managed section and preserve the manual section anchors.
+6. When re-entering a repository in a later session, read `.project-memory/README.md`, `generated/`, and relevant curated files before doing large-scale code scanning.
