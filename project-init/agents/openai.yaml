@@ -1,0 +1,4 @@
+interface:
+  display_name: "project-init"
+  short_description: "用纯文本方式初始化项目，补齐 AGENTS.md 并联动 project-memory"
+  default_prompt: "使用 $project-init 初始化当前仓库：检查或创建 AGENTS.md，并直接创建或刷新 .project-memory 的 Markdown 文件。不要依赖 Python 脚本。"
