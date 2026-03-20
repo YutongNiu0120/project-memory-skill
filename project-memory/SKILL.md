@@ -11,6 +11,8 @@ Use this skill to keep a repo-local project memory that survives across conversa
 
 This version is text-first. The agent should read and edit Markdown files directly instead of relying on Python scripts.
 
+There is no automatic backend for this skill. If the agent does not edit the Markdown files during the current turn, no project memory is persisted.
+
 Treat `.project-memory/generated/` as rebuildable context and `.project-memory/memory/` as curated history that must survive refreshes.
 When re-entering the same repository in a later session, treat `.project-memory` as the first historical source to read before broad repo scanning.
 
@@ -114,6 +116,16 @@ After substantial repo work, also consider updating the manual accumulation sect
 
 This file should help future Codex runs become faster and more repo-native over time.
 
+### End-of-Task Write-Back Gate
+
+Before the final answer on any repo task:
+
+1. Decide explicitly how this task should update project memory.
+2. Make at least one persistent write in the same turn, such as refreshing generated context, reinforcing curated memory, updating `current.md`, or re-validating an existing note.
+3. Avoid low-value task residue, but do not skip the write-back step.
+4. In the final answer, state clearly whether project memory was updated and which files were written.
+5. Treat stale timestamps, stale file lists, or template-only curated files as a signal that project memory still needs maintenance.
+
 ## Direct Editing Pattern
 
 Use direct file editing instead of helper scripts:
@@ -127,15 +139,17 @@ Use direct file editing instead of helper scripts:
 
 ## Working Loop
 
-For substantial repo work:
+For repo work:
 
 1. Read `AGENTS.md`.
-2. When revisiting a repository across sessions, read `.project-memory/README.md` and the linked historical files before broad code scanning.
+2. On every task, read `.project-memory/README.md` and the linked historical files before broad code scanning.
 3. Read `generated/project-summary.md`.
 4. Read `generated/development-playbook.md` before scanning large code areas or `common` packages.
 5. Read `generated/feature-index.md` to navigate into concrete code paths.
 6. Read curated memory when the task touches ongoing milestones, decisions, current focus, or previously learned project constraints.
-7. After the task, decide whether the change affects generated context, curated memory, or both.
+7. After the task, decide which project-memory file should be updated.
+8. Write the update before replying to the user.
+9. In the final answer, explicitly report which project-memory files changed.
 
 ## AGENTS.md Rules
 

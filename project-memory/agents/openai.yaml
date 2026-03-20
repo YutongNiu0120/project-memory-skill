@@ -1,4 +1,4 @@
 interface:
   display_name: "project-memory"
   short_description: "用纯文本方式维护仓库级 project-memory，沉淀方法论、样例与项目经验"
-  default_prompt: "使用 $project-memory 直接读写 Markdown，为当前仓库初始化或刷新 .project-memory，默认生成中文文档，并维护 AGENTS.md 中的项目记忆区块。再次进入同一项目时，在大范围扫描代码前优先读取 .project-memory 的历史记录。不要依赖 Python 脚本。"
+  default_prompt: "使用 $project-memory 直接读写 Markdown，为当前仓库初始化或刷新 .project-memory，默认生成中文文档，并维护 AGENTS.md 中的项目记忆区块。每次仓库任务开始前，都先读取 .project-memory 的历史记录；任务结束前，都要在 generated 或 curated 区至少做一次持久化写回，并在最终答复中明确说明更新了哪些项目记忆文件。这个 skill 没有自动持久化后端。不要依赖 Python 脚本。"
